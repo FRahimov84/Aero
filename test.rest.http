@@ -1,0 +1,44 @@
+POST http://localhost:9999/api/tokens
+Content-Type: application/json
+
+{
+  "username": "RendL",
+  "password": "hash"
+}
+
+> {% client.global.set("auth_token", response.body.token); %}
+
+###
+
+GET http://localhost:9999/api/users/me
+Authorization: Bearer {{auth_token}}
+
+###
+
+DELETE http://localhost:9999/api/users/1
+Authorization: Bearer {{auth_token}}
+
+###
+
+POST http://localhost:9999/api/users/new
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "username": "MOMO",
+  "password": "MOMO"
+}
+
+###
+
+POST http://localhost:9999/api/tokens
+Content-Type: application/json
+
+{
+  "username": "MOMO",
+  "password": "MOMO"
+}
+
+> {% client.global.set("auth_token", response.body.token); %}
+
+###
