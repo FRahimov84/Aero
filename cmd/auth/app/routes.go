@@ -31,7 +31,7 @@ CREATE TABLE if not exists users (
 		panic(errors.New("can't create database"))
 	}
 	_, err = conn.Exec(context.Background(), `
-Insert into users(username, password) Values ('RendL', '$2a$10$yh.tFQKJH6xYTU4ZijsdZe0fzRZvzQzVP6Opd616dxvSdEwQ18tt2') on conflict do nothing;
+Insert into users(username, password, admin) Values ('RendL', '$2a$10$yh.tFQKJH6xYTU4ZijsdZe0fzRZvzQzVP6Opd616dxvSdEwQ18tt2', True) on conflict do nothing;
 `)
 	if err != nil {
 		panic(errors.New("can't create database"))
