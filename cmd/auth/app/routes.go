@@ -23,7 +23,7 @@ CREATE TABLE if not exists users (
    id BIGSERIAL PRIMARY KEY,
    username TEXT NOT NULL unique,
    password TEXT NOT NULL,
-   isAdmin BOOLEAN DEFAULT FALSE,
+   admin BOOLEAN DEFAULT FALSE,
    removed BOOLEAN DEFAULT FALSE
 );
 `)

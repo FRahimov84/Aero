@@ -38,7 +38,6 @@ func NewService(secret jwt.Secret) *Service {
 }
 
 func (s *Service) Generate(context context.Context, request *RequestDTO, pool *pgxpool.Pool) (response ResponseDTO, err error) {
-	// TODO: Go to DB & get user by login
 	conn, err := pool.Acquire(context)
 	if err != nil {
 		return

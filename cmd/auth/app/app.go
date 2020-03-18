@@ -92,14 +92,18 @@ func (s *Server) handleDeleteProfile() http.HandlerFunc {
 			http.Error(writer, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 			return
 		}
-		byID, err := s.userSvc.FindUserByID(int64(id), s.pool)
-		if err != nil {
-			writer.Write([]byte(err.Error()))
-			return
-		}
 		profile, err := s.userSvc.Profile(request.Context())
 		if err != nil {
 			http.Error(writer, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+			return
+		}
+		if int64(id) == profile.Id {
+			writer.Write([]byte("you can't delete yourself"))
+			return
+		}
+		byID, err := s.userSvc.FindUserByID(int64(id), s.pool)
+		if err != nil {
+			writer.Write([]byte(err.Error()))
 			return
 		}
 		if byID.Name == profile.Name {
