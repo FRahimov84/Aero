@@ -52,9 +52,7 @@ func checkENV(env string, loc string) string {
 }
 
 func start(addr string, dsn string, secret jwt.Secret) {
-
 	container := di.NewContainer()
-
 	container.Provide(
 		app.NewServer,
 		mux.NewExactMux,
@@ -74,24 +72,8 @@ func start(addr string, dsn string, secret jwt.Secret) {
 	)
 
 	container.Start()
-	// IoC - inversion of control (программа определяет, куда вы можете встроиться)
-	// StartListener, StopListener
-	// см. Errors.As
+
 	var appServer *app.Server
 	container.Component(&appServer)
-	//http.Handle("/assets/",http.StripPrefix("/assets/",http.FileServer(http.Dir("./assets/"))))
-	//http.HandleFunc("/", indexHandler)
 	panic(http.ListenAndServe(addr, appServer))
 }
-
-//func indexHandler(writer http.ResponseWriter, request *http.Request) {
-//	tpl, err := template.ParseFiles(
-//		filepath.Join("web/templates", "index.gohtml"),
-//		filepath.Join("web/templates", "header.gohtml"),
-//		filepath.Join("web/templates", "footer.gohtml"))
-//	if err != nil {
-//		log.Printf("can't ParseFiles in func handleIndex err: %v", err)
-//		panic(err)
-//	}
-//	tpl.ExecuteTemplate(writer, "index", nil)
-//}
