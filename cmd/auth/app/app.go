@@ -1,9 +1,9 @@
 package app
 
 import (
-	"auth-service/pkg/core/token"
-	"auth-service/pkg/core/user"
 	"fmt"
+	"github.com/FRahimov84/AuthService/pkg/core/token"
+	"github.com/FRahimov84/AuthService/pkg/core/user"
 	"github.com/FRahimov84/Mux/pkg/mux"
 	"github.com/FRahimov84/myJwt/pkg/jwt"
 	"github.com/FRahimov84/rest/pkg/rest"
@@ -20,13 +20,13 @@ type (
 	AssetsPath string
 )
 type Server struct {
-	router         *mux.ExactMux
-	pool           *pgxpool.Pool
-	secret         jwt.Secret
-	tokenSvc       *token.Service
-	userSvc        *user.Service
-	templatesPath  TempPath
-	assetsPath     AssetsPath
+	router        *mux.ExactMux
+	pool          *pgxpool.Pool
+	secret        jwt.Secret
+	tokenSvc      *token.Service
+	userSvc       *user.Service
+	templatesPath TempPath
+	assetsPath    AssetsPath
 }
 
 func NewServer(router *mux.ExactMux, pool *pgxpool.Pool, secret jwt.Secret, tokenSvc *token.Service, userSvc *user.Service, templatesPath TempPath, assetsPath AssetsPath) *Server {
@@ -102,7 +102,7 @@ func (s *Server) handleDeleteProfile() http.HandlerFunc {
 			http.Error(writer, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 			return
 		}
-		if byID.Name == profile.Name{
+		if byID.Name == profile.Name {
 			writer.Write([]byte("you can't delete yourself"))
 			return
 		}
@@ -116,26 +116,26 @@ func (s *Server) handleDeleteProfile() http.HandlerFunc {
 }
 
 func (s *Server) handleIndex() http.HandlerFunc {
-		// executes in one goroutine
-		var (
+	// executes in one goroutine
+	var (
 		tpl *template.Template
 		err error
 	)
-		tpl, err = template.ParseFiles(
-			filepath.Join("web/templates", "index.gohtml"),
-			//filepath.Join("web/templates", "header.gohtml"),
-			//filepath.Join("web/templates", "footer.gohtml"),
-			)
-		if err != nil {
+	tpl, err = template.ParseFiles(
+		filepath.Join("web/templates", "index.gohtml"),
+		//filepath.Join("web/templates", "header.gohtml"),
+		//filepath.Join("web/templates", "footer.gohtml"),
+	)
+	if err != nil {
 		panic(err)
 	}
-		return func(writer http.ResponseWriter, request *http.Request) {
+	return func(writer http.ResponseWriter, request *http.Request) {
 		// executes in many goroutines
 		// TODO: fetch data from multiple upstream services
-		err := tpl.Execute(writer, struct {Title string}{Title: "Auth Service",})
+		err := tpl.Execute(writer, struct{ Title string }{Title: "Auth Service",})
 		if err != nil {
-		log.Printf("error while executing template %s %v", tpl.Name(), err)
-	}
+			log.Printf("error while executing template %s %v", tpl.Name(), err)
+		}
 	}
 
 }
@@ -184,6 +184,7 @@ func (s *Server) handleProfile() http.HandlerFunc {
 
 	}
 }
+
 //
 //func (s *Server) handleAdminLogin() http.HandlerFunc {
 //	var (

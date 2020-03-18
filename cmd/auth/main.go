@@ -1,12 +1,12 @@
 package main
 
 import (
-	"auth-service/cmd/auth/app"
-	"auth-service/pkg/core/token"
-	"auth-service/pkg/core/user"
 	"context"
 	"flag"
 	"fmt"
+	"github.com/FRahimov84/AuthService/cmd/auth/app"
+	"github.com/FRahimov84/AuthService/pkg/core/token"
+	"github.com/FRahimov84/AuthService/pkg/core/user"
 	"github.com/FRahimov84/Mux/pkg/mux"
 	"github.com/FRahimov84/di/pkg/di"
 	"github.com/FRahimov84/myJwt/pkg/jwt"
@@ -16,8 +16,6 @@ import (
 	"os"
 	"path/filepath"
 )
-
-
 
 var (
 	host = flag.String("host", "", "Server host")

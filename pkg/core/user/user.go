@@ -1,24 +1,24 @@
 package user
 
 import (
-	"auth-service/pkg/core/token"
-	"auth-service/pkg/mux/middleware/jwt"
 	"context"
 	"errors"
 	"fmt"
+	"github.com/FRahimov84/AuthService/pkg/core/token"
+	"github.com/FRahimov84/AuthService/pkg/mux/middleware/jwt"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"golang.org/x/crypto/bcrypt"
 )
 
-type Service struct { }
+type Service struct{}
 
 func NewService() *Service {
 	return &Service{}
 }
 
 type ResponseDTO struct {
-	Id int64 `json:"id"`
-	Name string `json:"name"`
+	Id     int64  `json:"id"`
+	Name   string `json:"name"`
 	Avatar string `json:"avatar"`
 }
 
@@ -29,8 +29,8 @@ func (s *Service) Profile(ctx context.Context) (response ResponseDTO, err error)
 	}
 
 	return ResponseDTO{
-		Id: auth.Id,
-		Name: auth.Username,
+		Id:     auth.Id,
+		Name:   auth.Username,
 		Avatar: "https://i.pravatar.cc/50",
 	}, nil
 }
@@ -44,8 +44,8 @@ func (s *Service) FindUserByID(id int64, pool *pgxpool.Pool) (response ResponseD
 	defer conn.Release()
 	var (
 		username string
-		isAdmin bool
-		removed bool
+		isAdmin  bool
+		removed  bool
 	)
 	fmt.Println(id)
 	err = conn.QueryRow(context.Background(), `select username, admin, removed from users where id = $1;`, id).Scan(&username, &isAdmin, &removed)
@@ -63,13 +63,13 @@ func (s *Service) FindUserByID(id int64, pool *pgxpool.Pool) (response ResponseD
 	}
 
 	return ResponseDTO{
-		Id: id,
-		Name: username,
+		Id:     id,
+		Name:   username,
 		Avatar: "https://i.pravatar.cc/50",
 	}, nil
 }
 
-func (s *Service) DelUserByID(id int64, pool *pgxpool.Pool) (err error){
+func (s *Service) DelUserByID(id int64, pool *pgxpool.Pool) (err error) {
 	conn, err := pool.Acquire(context.Background())
 	if err != nil {
 		err = errors.New("server error")

@@ -1,8 +1,8 @@
 package authorized
 
 import (
-	"auth-service/pkg/core/token"
 	"context"
+	"github.com/FRahimov84/AuthService/pkg/core/token"
 	"log"
 	"net/http"
 )
