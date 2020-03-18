@@ -42,7 +42,7 @@
 						password: document.getElementById('password').value
 					};
 
-					let response = await fetch('http://localhost:9999/api/tokens', {
+					let response = await fetch('/api/tokens', {
 						method: 'POST',
 						headers: {
 							'Content-Type': 'application/json'
