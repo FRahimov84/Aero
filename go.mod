@@ -1,8 +1,9 @@
-module github.com/FRahimov84/AuthService
+module AuthService
 
 go 1.13
 
 require (
+	github.com/FRahimov84/AuthService v0.0.0-20200318145318-1ba830aea8aa
 	github.com/FRahimov84/Mux v0.0.0-20200317100526-ed5288d66747
 	github.com/FRahimov84/di v0.0.0-20200314131826-a53f9269cf2f
 	github.com/FRahimov84/myJwt v0.0.0-20200313141737-f1a9cf8fc49d

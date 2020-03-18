@@ -2,7 +2,7 @@ package authorized
 
 import (
 	"context"
-	"github.com/FRahimov84/AuthService/pkg/core/token"
+	"AuthService/pkg/core/token"
 	"log"
 	"net/http"
 )

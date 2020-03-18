@@ -1,13 +1,13 @@
 package app
 
 import (
+	"AuthService/pkg/core/token"
+	"AuthService/pkg/mux/middleware/authenticated"
+	"AuthService/pkg/mux/middleware/authorized"
+	"AuthService/pkg/mux/middleware/jwt"
+	"AuthService/pkg/mux/middleware/logger"
 	"context"
 	"errors"
-	"github.com/FRahimov84/AuthService/pkg/core/token"
-	"github.com/FRahimov84/AuthService/pkg/mux/middleware/authenticated"
-	"github.com/FRahimov84/AuthService/pkg/mux/middleware/authorized"
-	"github.com/FRahimov84/AuthService/pkg/mux/middleware/jwt"
-	"github.com/FRahimov84/AuthService/pkg/mux/middleware/logger"
 	"reflect"
 )
 
