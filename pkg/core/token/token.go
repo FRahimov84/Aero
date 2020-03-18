@@ -43,8 +43,8 @@ func (s *Service) Generate(context context.Context, request *RequestDTO, pool *p
 	}
 	defer conn.Release()
 	var (
-		hash string
-		id   int64
+		hash    string
+		id      int64
 		isAdmin bool
 	)
 	err = conn.QueryRow(context, `select id, password, admin from users where username = $1 and removed = FALSE;`, request.Username).Scan(&id, &hash, &isAdmin)
@@ -58,7 +58,7 @@ func (s *Service) Generate(context context.Context, request *RequestDTO, pool *p
 	//log.Print(hash)
 
 	err = bcrypt.CompareHashAndPassword([]byte(hash), []byte(request.Password))
-	if errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
+	if err != nil {
 		err = ErrInvalidPassword
 		return
 	}
@@ -67,10 +67,10 @@ func (s *Service) Generate(context context.Context, request *RequestDTO, pool *p
 		role = "Admin"
 	}
 	response.Token, err = jwt.Encode(Payload{
-		Id:  id,
+		Id:       id,
 		Username: request.Username,
-		Exp: time.Now().Add(time.Hour).Unix(),
-		Roles: []string{role},
+		Exp:      time.Now().Add(time.Hour).Unix(),
+		Roles:    []string{role},
 	}, s.secret)
 	if err != nil {
 		return ResponseDTO{}, ErrServerError
