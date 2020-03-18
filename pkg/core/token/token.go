@@ -29,7 +29,6 @@ type ResponseDTO struct {
 	Token string `json:"token"`
 }
 
-var ErrInvalidLogin = errors.New("invalid password")
 var ErrInvalidPassword = errors.New("invalid password")
 var ErrServerError = errors.New("server error")
 

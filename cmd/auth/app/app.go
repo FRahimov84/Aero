@@ -98,20 +98,24 @@ func (s *Server) handleDeleteProfile() http.HandlerFunc {
 			return
 		}
 		if int64(id) == profile.Id {
+			http.Error(writer, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 			writer.Write([]byte("you can't delete yourself"))
 			return
 		}
 		byID, err := s.userSvc.FindUserByID(int64(id), s.pool)
 		if err != nil {
+			http.Error(writer, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 			writer.Write([]byte(err.Error()))
 			return
 		}
 		if byID.Name == profile.Name {
+			http.Error(writer, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 			writer.Write([]byte("you can't delete yourself"))
 			return
 		}
 		err = s.userSvc.DelUserByID(int64(id), s.pool)
 		if err != nil {
+			http.Error(writer, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 			writer.Write([]byte(err.Error()))
 			return
 		}

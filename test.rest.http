@@ -15,7 +15,7 @@ Authorization: Bearer {{auth_token}}
 
 ###
 
-DELETE http://localhost:9999/api/users/2
+DELETE http://localhost:9999/api/users/1
 Authorization: Bearer {{auth_token}}
 
 ###
