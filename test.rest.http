@@ -1,4 +1,4 @@
-POST https://auth-servisss.herokuapp.com/api/tokens
+POST http://localhost:9999/api/tokens
 Content-Type: application/json
 
 {
@@ -10,33 +10,34 @@ Content-Type: application/json
 
 ###
 
-GET https://auth-servisss.herokuapp.com/api/users/me
+GET http://localhost:9999/api/users
 Authorization: Bearer {{auth_token}}
 
 ###
 
-DELETE http://localhost:9999/api/users/1
+DELETE http://localhost:9999/api/users/4
 Authorization: Bearer {{auth_token}}
 
 ###
 
-POST http://localhost:9999/api/users/new
+POST http://localhost:9999/api/users/4
 Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "username": "MOMO2",
+  "password": "MOMO2",
+  "admin": false
+}
+
+###
+
+POST http://localhost:9999/api/tokens
 Content-Type: application/json
 
 {
   "username": "MOMO",
   "password": "MOMO"
-}
-
-###
-
-POST https://auth-servisss.herokuapp.com/api/tokens
-Content-Type: application/json
-
-{
-  "username": "MOMOO",
-  "password": "MOMOO"
 }
 
 > {% client.global.set("auth_token", response.body.token); %}

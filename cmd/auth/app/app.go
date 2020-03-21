@@ -38,7 +38,6 @@ func (s *Server) Start() {
 }
 
 func (s *Server) Stop() {
-	// TODO: make server stop
 }
 
 type ErrorDTO struct {
@@ -52,9 +51,6 @@ func (s *Server) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 func (s *Server) handleCreateToken() http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
 		var body token.RequestDTO
-		//all, _ := ioutil.ReadAll(request.Body)
-		//fmt.Println(string(all))
-
 		err := rest.ReadJSONBody(request, &body)
 		if err != nil {
 			writer.WriteHeader(http.StatusBadRequest)
@@ -87,7 +83,12 @@ func (s *Server) handleCreateToken() http.HandlerFunc {
 
 func (s *Server) handleDeleteProfile() http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
-		id, err := strconv.Atoi(request.URL.Path[11:])
+		context, ok := mux.FromContext(request.Context(), "id")
+		if !ok {
+			http.Error(writer, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+			return
+		}
+		id, err := strconv.Atoi(context)
 		if err != nil {
 			http.Error(writer, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 			return
@@ -98,41 +99,38 @@ func (s *Server) handleDeleteProfile() http.HandlerFunc {
 			return
 		}
 		if int64(id) == profile.Id {
-			http.Error(writer, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-			writer.Write([]byte("you can't delete yourself"))
+			writer.WriteHeader(http.StatusBadRequest)
+			err = rest.WriteJSONBody(writer, &ErrorDTO{
+				[]string{"you can't delete yourself"},
+			})
+			if err != nil {
+				log.Print(err)
+			}
 			return
 		}
-		byID, err := s.userSvc.FindUserByID(int64(id), s.pool)
+		err = s.userSvc.DelUserByID(request.Context(), int64(id))
 		if err != nil {
-			http.Error(writer, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
-			writer.Write([]byte(err.Error()))
+			writer.WriteHeader(http.StatusBadRequest)
+			err2 := rest.WriteJSONBody(writer, &ErrorDTO{
+				[]string{err.Error()},
+			})
+			if err2 != nil {
+				log.Print(err2)
+			}
 			return
 		}
-		if byID.Name == profile.Name {
-			http.Error(writer, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
-			writer.Write([]byte("you can't delete yourself"))
-			return
-		}
-		err = s.userSvc.DelUserByID(int64(id), s.pool)
-		if err != nil {
-			http.Error(writer, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
-			writer.Write([]byte(err.Error()))
-			return
-		}
-		writer.Write([]byte("done!"))
+
 	}
 }
 
 func (s *Server) handleIndex() http.HandlerFunc {
-	// executes in one goroutine
+
 	var (
 		tpl *template.Template
 		err error
 	)
 	tpl, err = template.ParseFiles(
 		filepath.Join("web/templates", "index.gohtml"),
-		//filepath.Join("web/templates", "header.gohtml"),
-		//filepath.Join("web/templates", "footer.gohtml"),
 	)
 	if err != nil {
 		panic(err)
@@ -140,49 +138,49 @@ func (s *Server) handleIndex() http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
 		// executes in many goroutines
 		// TODO: fetch data from multiple upstream services
-		err := tpl.Execute(writer, struct{ Title string }{Title: "Auth Service",})
+		err = tpl.Execute(writer, struct{ Title string }{Title: "Auth Service",})
 		if err != nil {
 			log.Printf("error while executing template %s %v", tpl.Name(), err)
 		}
 	}
 
 }
-
-func (s *Server) handleRegister() http.HandlerFunc {
-	return func(writer http.ResponseWriter, request *http.Request) {
-		get := request.Header.Get("Content-Type")
-		fmt.Println(get)
-		if get != "application/json" {
-			http.Error(writer, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
-			return
-		}
-
-		var newUser token.RequestDTO
-
-		err := rest.ReadJSONBody(request, &newUser)
-		if err != nil {
-			http.Error(writer, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
-			return
-		}
-		err = s.userSvc.RegisterUser(newUser, s.pool)
-		if err != nil {
-			writer.Write([]byte(err.Error()))
-			return
-		}
-		writer.Write([]byte("done!"))
-
-	}
-}
+//
+//func (s *Server) handleRegister() http.HandlerFunc {
+//	return func(writer http.ResponseWriter, request *http.Request) {
+//		get := request.Header.Get("Content-Type")
+//		fmt.Println(get)
+//		if get != "application/json" {
+//			http.Error(writer, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+//			return
+//		}
+//
+//		var newUser token.RequestDTO
+//
+//		err := rest.ReadJSONBody(request, &newUser)
+//		if err != nil {
+//			http.Error(writer, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+//			return
+//		}
+//		err = s.userSvc.RegisterUser(request.Context(), newUser, s.pool)
+//		if err != nil {
+//			writer.Write([]byte(err.Error()))
+//			return
+//		}
+//		writer.Write([]byte("done!"))
+//
+//	}
+//}
 
 func (s *Server) handleProfile() http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
 		response, err := s.userSvc.Profile(request.Context())
 		if err != nil {
 			writer.WriteHeader(http.StatusBadRequest)
-			err := rest.WriteJSONBody(writer, &ErrorDTO{
+			err2 := rest.WriteJSONBody(writer, &ErrorDTO{
 				[]string{"err.bad_request"},
 			})
-			log.Print(err)
+			log.Print(err2)
 			return
 		}
 		err = rest.WriteJSONBody(writer, &response)
@@ -193,28 +191,61 @@ func (s *Server) handleProfile() http.HandlerFunc {
 	}
 }
 
-//
-//func (s *Server) handleAdminLogin() http.HandlerFunc {
-//	var (
-//		tpl *template.Template
-//		err error
-//	)
-//	tpl, err = template.ParseFiles(
-//		filepath.Join("web/templates", "AdminPanel.gohtml"),
-//		//filepath.Join("web/templates", "header.gohtml"),
-//		//filepath.Join("web/templates", "footer.gohtml"),
-//	)
-//	if err != nil {
-//		panic(err)
-//	}
-//	return func(writer http.ResponseWriter, request *http.Request) {
-//		err := tpl.Execute(writer, struct {Title string}{Title: "Admin Panel",})
-//		if err != nil {
-//			log.Printf("error while executing template %s %v", tpl.Name(), err)
-//		}
-//	}
-//}
+func (s *Server) handleUser() http.HandlerFunc {
+	return func(writer http.ResponseWriter, request *http.Request) {
+		context, ok := mux.FromContext(request.Context(), "id")
+		if !ok {
+			http.Error(writer, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+			return
+		}
+		id, err := strconv.Atoi(context)
+		if err != nil {
+			http.Error(writer, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+			return
+		}
+		get := request.Header.Get("Content-Type")
+		fmt.Println(get)
+		if get != "application/json" {
+			http.Error(writer, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+			return
+		}
 
-//func (s *Server) handAdmin() http.HandlerFunc {
-//
-//}
+		var newUser token.RequestDTO
+
+		err = rest.ReadJSONBody(request, &newUser)
+		if err != nil {
+			http.Error(writer, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+			return
+		}
+		if id == 0 {
+
+			err = s.userSvc.RegisterUser(request.Context(), newUser)
+			if err != nil {
+				writer.WriteHeader(http.StatusBadRequest)
+				err2 := rest.WriteJSONBody(writer, &ErrorDTO{
+					[]string{err.Error()},
+				})
+				log.Print(err2)
+				return
+			}
+			writer.WriteHeader(http.StatusNoContent)
+			return
+		}
+		if id > 0 {
+			err := s.userSvc.Update(request.Context(), int64(id), newUser)
+			if err != nil {
+				writer.WriteHeader(http.StatusBadRequest)
+				err2 := rest.WriteJSONBody(writer, &ErrorDTO{
+					[]string{err.Error()},
+				})
+				log.Print(err2)
+				return
+			}
+			writer.WriteHeader(http.StatusNoContent)
+			return
+		}
+
+		http.Error(writer,http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+	}
+}
+

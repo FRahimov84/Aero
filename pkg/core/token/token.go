@@ -23,6 +23,7 @@ type Payload struct {
 type RequestDTO struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
+	Admin	bool	`json:"admin"`
 }
 
 type ResponseDTO struct {
@@ -53,9 +54,6 @@ func (s *Service) Generate(context context.Context, request *RequestDTO, pool *p
 		err = ErrServerError
 		return
 	}
-
-	//hash, err := bcrypt.GenerateFromPassword([]byte("hash"), bcrypt.DefaultCost)
-	//log.Print(hash)
 
 	err = bcrypt.CompareHashAndPassword([]byte(hash), []byte(request.Password))
 	if err != nil {
