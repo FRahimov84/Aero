@@ -1,12 +1,12 @@
 package main
 
 import (
-	"AuthService/cmd/auth/app"
-	"AuthService/pkg/core/token"
-	"AuthService/pkg/core/user"
 	"context"
 	"flag"
 	"fmt"
+	"github.com/FRahimov84/AuthService/cmd/auth/app"
+	"github.com/FRahimov84/AuthService/pkg/core/token"
+	"github.com/FRahimov84/AuthService/pkg/core/user"
 	"github.com/FRahimov84/Mux/pkg/mux"
 	"github.com/FRahimov84/di/pkg/di"
 	"github.com/FRahimov84/myJwt/pkg/jwt"
@@ -23,6 +23,7 @@ var (
 	dsn  = flag.String("dsn", "", "Postgres DSN")
 )
 
+//-host 0.0.0.0 -port 9999 -dsn postgres://user:pass@localhost:5432/auth
 const (
 	envHost = "HOST"
 	envPort = "PORT"

@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"AuthService/pkg/core/token"
-	"AuthService/pkg/mux/middleware/jwt"
+	"github.com/FRahimov84/AuthService/pkg/core/token"
+	"github.com/FRahimov84/AuthService/pkg/mux/middleware/jwt"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"golang.org/x/crypto/bcrypt"
 )
