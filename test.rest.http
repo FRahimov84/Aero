@@ -20,13 +20,13 @@ Authorization: Bearer {{auth_token}}
 
 ###
 
-POST http://localhost:9999/api/users/4
+POST http://localhost:9999/api/users/9
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 {
-  "username": "MOMO2",
-  "password": "MOMO2",
+  "username": "MOMdOs",
+  "password": "MOMOs",
   "admin": false
 }
 

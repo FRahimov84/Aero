@@ -150,12 +150,17 @@ func (s *Service) Update(ctx context.Context, id int64, dto token.RequestDTO) (e
 	}
 	defer func() {
 		if err != nil {
-			err = begin.Rollback(ctx)
-			log.Printf("can't rollback %v", err)
+			err2 := begin.Rollback(ctx)
+			if err2 != nil {
+				log.Printf("can't rollback %v", err2)
+			}
 			return
 		}
-		err = begin.Commit(ctx)
-		log.Printf("can't commit %v", err)
+		err2 := begin.Commit(ctx)
+		if err2 != nil {
+			log.Printf("can't commit %v", err2)
+		}
+
 	}()
 	if dto.Username != "" {
 		_, err = begin.Exec(ctx, `UPDATE users SET username = $2 WHERE id = $1;`, id, dto.Username)
