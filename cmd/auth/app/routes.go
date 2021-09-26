@@ -1,11 +1,11 @@
 package app
 
 import (
-	"github.com/FRahimov84/AuthService/pkg/core/token"
-	"github.com/FRahimov84/AuthService/pkg/mux/middleware/authenticated"
-	"github.com/FRahimov84/AuthService/pkg/mux/middleware/authorized"
-	"github.com/FRahimov84/AuthService/pkg/mux/middleware/jwt"
-	"github.com/FRahimov84/AuthService/pkg/mux/middleware/logger"
+	"github.com/FRahimov84/Aero/pkg/core/token"
+	"github.com/FRahimov84/Aero/pkg/mux/middleware/authenticated"
+	"github.com/FRahimov84/Aero/pkg/mux/middleware/authorized"
+	"github.com/FRahimov84/Aero/pkg/mux/middleware/jwt"
+	"github.com/FRahimov84/Aero/pkg/mux/middleware/logger"
 	"reflect"
 )
 

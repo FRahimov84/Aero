@@ -2,8 +2,8 @@ package app
 
 import (
 	"fmt"
-	"github.com/FRahimov84/AuthService/pkg/core/token"
-	"github.com/FRahimov84/AuthService/pkg/core/user"
+	"github.com/FRahimov84/Aero/pkg/core/token"
+	"github.com/FRahimov84/Aero/pkg/core/user"
 	"github.com/FRahimov84/Mux/pkg/mux"
 	"github.com/FRahimov84/myJwt/pkg/jwt"
 	"github.com/FRahimov84/rest/pkg/rest"

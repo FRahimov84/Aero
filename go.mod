@@ -1,4 +1,4 @@
-module github.com/FRahimov84/AuthService
+module github.com/FRahimov84/Aero
 
 go 1.13
 
